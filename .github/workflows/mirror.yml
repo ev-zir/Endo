@@ -1,0 +1,28 @@
+name: Xeno
+
+on:
+  # Trigger the workflow on every push to the main branch
+  push:
+    branches:
+      - main  # Trigger when there is a commit on the main branch (you can adjust if needed)
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+
+    - name: Set up Git
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+
+    - name: Add backup remote repository
+      run: git remote add backup https://github.com/ev-zir/Endo.git  # replace with your backup repo URL
+
+    - name: Push changes to backup repository
+      run: git push --mirror backup
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
